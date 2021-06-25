@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react';
+
 const HelloJSXData = (props: IHelloJSXDataProps) => {
     return (
         <div className="HelloJSXData">
