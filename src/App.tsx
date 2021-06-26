@@ -11,6 +11,7 @@ import CircleWithD3Events from "./components/CircleWithEvents/CircleWithD3Events
 import PulsatingCircle from "./components/PulsatingCircle/PulsatingCircle";
 import PulsatingCircleD3 from "./components/PulsatingCircle/PulsatingCircleD3";
 import BasicLineChart from './components/BasicLineChart/BasicLineChart';
+import BasicAreaChart from './components/AreaChart/BasicAreaChart';
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
         </g>
       </svg> */}
       {/* <PulsatingCircleD3 /> */}
-      <BasicLineChart top={10} right={50} bottom={50} left={50} width={900} height={400} fill="tomato" />
+      {/* <BasicLineChart top={10} right={50} bottom={50} left={50} width={900} height={400} fill="tomato" /> */}
+      <BasicAreaChart top={10} right={50} bottom={50} left={50} width={1000} height={400} fill="tomato" />
       </header>
     </div>
   )
