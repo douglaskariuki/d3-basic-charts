@@ -50,7 +50,7 @@ const ScatterChart = (props: IBasicScatterChartProps) => {
         //         .attr("r", 5)
         
         function drawDots(dataset, color) {
-            let dots = bounds.selectAll("circle")
+            let dots = bounds.selectAll("circle").data(dataset)
 
             dots
                 .enter().append("circle")
@@ -62,19 +62,19 @@ const ScatterChart = (props: IBasicScatterChartProps) => {
 
         drawDots(dataset.slice(0, 200), "darkgrey")
 
-        // setTimeout(() => {
-        //     drawDots(dataset, "cornflowerblue")
-        // }, 2000)
+        setTimeout(() => {
+            drawDots(dataset, "cornflowerblue")
+        }, 2000)
 
 
-        // const dots = bounds.selectAll("circle")
-        //     .data(dataset)
-        //     .enter()
-        //     .append("circle")
-        //     .attr("cx", d => xScale(xAccessor(d)))
-        //     .attr("cy", d => yScale(yAccessor(d)))
-        //     .attr("r", 5)
-        //     .attr("fill", "cornflowerblue")
+        const dots = bounds.selectAll("circle")
+            .data(dataset)
+            .enter()
+            .append("circle")
+            .attr("cx", d => xScale(xAccessor(d)))
+            .attr("cy", d => yScale(yAccessor(d)))
+            .attr("r", 5)
+            .attr("fill", "cornflowerblue")
 
     }
 
