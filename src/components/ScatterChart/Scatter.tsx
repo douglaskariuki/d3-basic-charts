@@ -48,12 +48,46 @@ const ScatterChart = (props: IBasicScatterChartProps) => {
         //         .attr("cx", xScale(xAccessor(d)))
         //         .attr("cy", yScale(yAccessor(d)))
         //         .attr("r", 5)
-        
+
+        const xAxisGenerator = d3.axisBottom()
+            .scale(xScale)
+
+        const yAxisGenerator = d3.axisLeft()
+            .scale(yScale)
+            .ticks(4)
+
+        const yAxis = bounds.append("g")
+            .call(yAxisGenerator)
+            
+
+        const xAxis = bounds.append("g")
+            .call(xAxisGenerator)
+                .style("transform", `translateY(${dimensions.height - props.top - props.bottom}px)`)
+    
+        const yAxisLabel = yAxis.append("text")
+            .attr("x", -dimensions.height  / 2)
+            .attr("y", -props.left + 10)
+            .attr("fill", "white")
+            .style("font-size", "1.4em")
+            .text("Relative Humidity")
+            .style("transform", "rotate(-90deg)")
+            .style("text-anchor", "middle")
+
+
+        const xAxisLabel = xAxis.append("text")
+            .attr("x", dimensions.width / 2)
+            .attr("y", props.bottom - 10)
+            .attr("fill", "white")
+            .style("font-size", "1.4em")
+            .html("Dew point (&deg;F)")
+
         function drawDots(dataset, color) {
             let dots = bounds.selectAll("circle").data(dataset)
 
             dots
-                .enter().append("circle")
+                // .enter().append("circle")
+                // .merge(dots)
+                .join("circle")
                 .attr("cx", d => xScale(xAccessor(d)))
                 .attr("cy", d => yScale(yAccessor(d)))
                 .attr("r", 5)
@@ -65,16 +99,6 @@ const ScatterChart = (props: IBasicScatterChartProps) => {
         setTimeout(() => {
             drawDots(dataset, "cornflowerblue")
         }, 2000)
-
-
-        const dots = bounds.selectAll("circle")
-            .data(dataset)
-            .enter()
-            .append("circle")
-            .attr("cx", d => xScale(xAccessor(d)))
-            .attr("cy", d => yScale(yAccessor(d)))
-            .attr("r", 5)
-            .attr("fill", "cornflowerblue")
 
     }
 
