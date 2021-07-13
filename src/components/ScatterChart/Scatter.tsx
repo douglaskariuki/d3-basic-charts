@@ -12,6 +12,7 @@ const ScatterChart = (props: IBasicScatterChartProps) => {
 
         const xAccessor = d => d.dewPoint
         const yAccessor = d => d.humidity
+        const colorAccessor = d => d.cloudCover
 
         const width = d3.min([
             window.innerWidth * 0.9,
@@ -40,6 +41,10 @@ const ScatterChart = (props: IBasicScatterChartProps) => {
             .domain(d3.extent(dataset, yAccessor))
             .range([dimensions.height - props.top - props.bottom, 0])
             .nice()
+
+        const colorScale = d3.scaleLinear()
+            .domain(d3.extent(dataset, colorAccessor))
+            .range(["skyblue", "darkslategrey"]) 
 
         // dataset.forEach(d => {
         //     bounds
@@ -81,7 +86,7 @@ const ScatterChart = (props: IBasicScatterChartProps) => {
             .style("font-size", "1.4em")
             .html("Dew point (&deg;F)")
 
-        function drawDots(dataset, color) {
+        function drawDots(dataset) {
             let dots = bounds.selectAll("circle").data(dataset)
 
             dots
@@ -91,13 +96,11 @@ const ScatterChart = (props: IBasicScatterChartProps) => {
                 .attr("cx", d => xScale(xAccessor(d)))
                 .attr("cy", d => yScale(yAccessor(d)))
                 .attr("r", 5)
-                .attr("fill", color)
+                .attr("fill", d => colorScale(colorAccessor(d)))
         }
 
-        drawDots(dataset.slice(0, 200), "darkgrey")
-
         setTimeout(() => {
-            drawDots(dataset, "cornflowerblue")
+            drawDots(dataset)
         }, 2000)
 
     }
