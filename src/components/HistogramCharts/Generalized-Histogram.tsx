@@ -66,7 +66,7 @@ export default function GeneralizedHistogram() {
             const bins = binsGenerator(dataset)
 
             const yScale = d3.scaleLinear()
-                .domain([0, d3.max(bins, yAccessor)])
+                .domain([0, d3.max(bins, yAccessor)]) // .max() will find the maximum number of days in a bin
                 .range([dimensions.boundedHeight, 0])
                 .nice()
 
@@ -80,15 +80,58 @@ export default function GeneralizedHistogram() {
             const barPadding = 1
 
             const barRects = binGroups.append("rect")
-                .attr("x", d => xScale(d.x0) + barPadding / 2) // bar will start at the lower bound of the bin, xScale will convert it to humidity levels to pixel space
+                .attr("x", d => xScale(d.x0) ) // bar will start at the lower bound of the bin, xScale will convert it to humidity levels to pixel space
                 .attr("y", d => yScale(yAccessor(d)))
-                .attr("width", d => d3.max([
+                .attr("width", d => d3.max([ // .max() prevents passing <rect> a negative width, d3.max(0, width)
                     0, xScale(d.x1) - xScale(d.x0) - barPadding
                 ]))
                 .attr("height", d => dimensions.boundedHeight
                     - yScale(yAccessor(d))
                 )
                 .attr("fill", "cornflowerblue")
+
+            const barText = binGroups.filter(yAccessor)
+                .append("text")
+                    .attr("x", d => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2) // center of the bar, add half of the bar's width to left side of the bar
+                    .attr("y", d => yScale(yAccessor(d)) - 5) // shift up by 5px for the gap
+                    .text(yAccessor)
+                    .style("text-anchor", "middle")
+                    .attr("fill", "white")
+                    .style("font-size", "12px")
+                    .style("font-family", "sans-serif")
+
+            const mean = d3.mean(dataset, metricAccessor)
+
+            const meanLine = bounds.append("line")
+                .attr("x1", xScale(mean))
+                .attr("x2", xScale(mean))
+                .attr("y1", -15)
+                .attr("y2", dimensions.boundedHeight)
+                .attr("stroke", "white")
+                .attr("stroke-dasharray", "10px 5px")
+
+            const meanLabel = bounds.append("text")
+                .attr("x", xScale(mean))
+                .attr("y", -20)
+                .text("mean")
+                .attr("fill", "white")
+                .style("font-size", "12px")
+                .style("text-anchor", "middle")
+
+            const xAxisGenerator = d3.axisBottom()
+                .scale(xScale)
+
+            const xAxis = bounds.append("g")
+                .call(xAxisGenerator)
+                    .style("transform", `translateY(${dimensions.boundedHeight}px)`)
+
+            const xAxisLabel = xAxis.append("text")
+                .attr("x", dimensions.boundedWidth / 2)
+                .attr("y", dimensions.margin.bottom - 10)
+                .attr("fill", "white")
+                .style("font-size", "1.4em")
+                .text(metric)
+                .style("text-transform", "capitalize")
             
             
         }
