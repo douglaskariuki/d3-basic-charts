@@ -78,22 +78,22 @@ export default function Histogram(props: IBasicScatterChartProps) {
             .attr("x", d => xScale(d.x0) + barPadding / 2) // bar will start at the lower bound of the bin, xScale will convert it to humidity levels to pixel space
             .attr("y", d => yScale(yAccesssor(d)))
             .attr("width", d => d3.max([
-                0, xScale(d.x1) - xScale(d.x0) - barPadding
+                0, xScale(d.x1) - xScale(d.x0) - barPadding // .max() prevents passing <rect> a negative width, d3.max(0, width)
             ]))
             .attr("height", d => dimensions.boundedHeight
                 - yScale(yAccesssor(d))
             )
             .attr("fill", "cornflowerblue")
 
-        // const barText = binsGroup.filter(yAccesssor)
-        //     .append("text")
-        //         .attr("x", d => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
-        //         .attr("y", d => yScale(yAccesssor(d)) - 5)
-        //         .text(yAccesssor)
-        //         .style("text-anchor", "middle")
-        //         .attr("fill", "darkgrey")
-        //         .style("font-size", "12px")
-        //         .style("font-family", "sans-serif")
+        const barText = binGroups.filter(yAccesssor)
+            .append("text")
+                .attr("x", d => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
+                .attr("y", d => yScale(yAccesssor(d)) - 5)
+                .text(yAccesssor)
+                .style("text-anchor", "middle")
+                .attr("fill", "darkgrey")
+                .style("font-size", "12px")
+                .style("font-family", "sans-serif")
 
         const mean = d3.mean(dataset, metricAccessor)
 
