@@ -37,6 +37,15 @@ export default function Histogram(props: IBasicScatterChartProps) {
             .append("svg")
             .attr("width", dimensions.width)
             .attr("height", dimensions.height)
+            .attr("role", "figure")
+            .attr("tabIndex", "0")
+
+        wrapper.append("title")
+            .text("Histogram looking at the distribution of humidity in 2020")
+
+        wrapper.selectAll("text")
+            .attr("role", "presentation")
+            .attr("aria-hidden", "true") // screen reader will read only labels and ignore <text> elements within chart e.g x-axis tick labels
 
         const bounds = wrapper.append("g")
             .style("transform", `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`)
@@ -65,11 +74,15 @@ export default function Histogram(props: IBasicScatterChartProps) {
         console.log("yScale", yScale)
 
         const binsGroup = bounds.append("g")
+            .attr("tabIndex", "0")
+            .attr("role", "list")
+            .attr("aria-label", "histogram bars")
 
         const binGroups = binsGroup.selectAll("g")
             .data(bins)
             .enter()
             .append("g")
+            .attr("aris-label", d => `There were ${yAccessor(d)} days between ${d.x0?.toString().slice(0, 4)} and ${d.x1?.toString().slice(0, 4)} humidity levels.`)
 
 
         const barPadding = 1
