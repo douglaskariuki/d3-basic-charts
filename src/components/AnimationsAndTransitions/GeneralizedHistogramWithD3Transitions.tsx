@@ -67,7 +67,10 @@ export default function GeneralizedHistogramWithD3Transitions() {
                 .value(metricAccessor)
                 .thresholds(12)
 
+            console.log("binsGenerator", binsGenerator)
+
             const bins = binsGenerator(dataset)
+            console.log("bins", bins)
 
             const yScale = d3.scaleLinear()
                 .domain([0, d3.max(bins, yAccessor)])
@@ -77,10 +80,10 @@ export default function GeneralizedHistogramWithD3Transitions() {
             // draw data
 
             const exitTransition = d3.transition()
-                .duration(600)
+                .duration(600).ease(d3.easeBackIn)
 
-            const updateTransition = exitTransition.transition()
-                .duration(600)
+            const updateTransition = exitTransition.transition() // delay update transition until exit is finished
+                .duration(600).ease(d3.easeBackIn)
 
             const barPadding = 1
 
@@ -131,14 +134,34 @@ export default function GeneralizedHistogramWithD3Transitions() {
                         0,
                         xScale(d.x1) - xScale(d.x0) - barPadding
                     ]))
-                    .transition()
+                .transition()
                     .style("fill", "cornflowerblue")
+
+            console.log("barRects", barRects)
 
             const barText = binGroups.select("text")
                 .transition(updateTransition)
                     .attr("x", d => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
                     .attr("y", d => yScale(yAccessor(d)) - 5)
                     .text(d => yAccessor(d) || "")
+
+            const mean = d3.mean(dataset, metricAccessor)
+
+            const meanLine = bounds.selectAll(".mean")
+                    .transition(updateTransition)
+                        .attr("x1", xScale(mean))
+                        .attr("x2", xScale(mean))
+                        .attr("y1", -20)
+                        .attr("y2", dimensions.boundedHeight)
+
+            const meanLabel = bounds.append("text")
+                .transition(updateTransition)
+                    .attr("x", xScale(mean))
+                    .attr("y", -20)
+                    .text("mean")
+                    .attr("fill", "white")
+                    .style("font-size", "12px")
+                    .style("text-anchor", "middle")
 
             // draw peripherals
             const xAxisGenerator = d3.axisBottom()
